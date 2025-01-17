@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "expo": "^52.0.25"
+    "expo": "^52.0.25",
+    "react-router-native": "^6.28.1"
   }
 }
