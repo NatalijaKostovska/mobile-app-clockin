@@ -22,7 +22,7 @@ import { Ionicons } from '@expo/vector-icons';
   ];
 
   const navItems = isAdmin ? adminNavItems : employeeNavItems;
-
+console.log(employeeNavItems, isAdmin)
   const handleNavigation = (path) => {
     if (path === '/login') {
         navigate('/login');

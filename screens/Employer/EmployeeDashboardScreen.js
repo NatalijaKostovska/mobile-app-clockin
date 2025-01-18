@@ -27,7 +27,7 @@ const EmployeeDashboardScreen = () => {
       <Text style={styles.warningText}>
         You're not scheduled to work. Are you sure you want to clock in?
       </Text>
-      <NavigationMenu isAdmin={true} />
+      <NavigationMenu isAdmin={false} />
     </View>
   );
 };

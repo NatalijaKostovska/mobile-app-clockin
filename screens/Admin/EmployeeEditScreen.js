@@ -138,7 +138,7 @@ const EmployeeEditScreen = ({ navigation }) => {
       </ScrollView>
 
       {/* Navigation Menu */}
-      <NavigationMenu isAdmin={true} />
+      <NavigationMenu isAdmin={false} />
     </SafeAreaView>
   );
 };

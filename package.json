@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@reduxjs/toolkit": "^2.5.0",
     "expo": "^52.0.25",
+    "react-redux": "^9.2.0",
     "react-router-native": "^6.28.1"
   }
 }

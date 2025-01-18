@@ -1,16 +1,17 @@
-import { useNavigate } from 'react-router-native';
-import { View, Text } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import React from 'react';
 import {
-  TouchableOpacity,
   StyleSheet,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import NavigationMenu from '../NavigationMenu';
+import { useDispatch, useSelector } from 'react-redux';
+import { increment, decrement, incrementByAmount } from '../../redux/slices/counterSlice';
 
 const DashboardScreen = () => {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
 
   return (
       <SafeAreaView style={styles.container}>
@@ -21,7 +22,13 @@ const DashboardScreen = () => {
         <Text style={styles.headerText}>
           What would you like to do today?
         </Text>
-        <NavigationMenu isAdmin={true} />
+        <View>
+          <Text style={styles.headerText}>{count}</Text>
+          <Button title="Increment" onPress={() => dispatch(increment())} />
+          <Button title="Decrement" onPress={() => dispatch(decrement())} />
+          <Button title="Increment by 5" onPress={() => dispatch(incrementByAmount(5))} />
+        </View>
+        <NavigationMenu isAdmin={false} />
       </SafeAreaView>
 );
 }

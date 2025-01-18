@@ -7,6 +7,7 @@ import LoginScreen from '../screens/LoginScreen';
 import EmployeeDashboardScreen from '../screens/Employer/EmployeeDashboardScreen';
 import AddNewEmployee from '../screens/Admin/AddNewEmployee';
 import EmployeeEditScreen from '../screens/Admin/EmployeeEditScreen';
+import EmployeeTimeline from '../screens/Employer/EmployeeTimeline';
 
 export default function AppNavigator() {
   return (
@@ -19,6 +20,7 @@ export default function AppNavigator() {
         <Route path='/employee-dashboard' element={<EmployeeDashboardScreen />} />
         <Route path='/add-new-employee' element={<AddNewEmployee />} />
         <Route path='/employee-edit' element={<EmployeeEditScreen />} />
+        <Route path='/worked-timeline' element={<EmployeeTimeline />} />
       </Routes>
     </NativeRouter>
   );
