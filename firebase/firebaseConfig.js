@@ -1,17 +1,17 @@
 // Import Firebase modules
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-// Currently not implemented 
 // Your Firebase configuration object (from Firebase Console)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyCpZaSdDKe8GCsVZNHzoKq1kyaRYzdRB9Y",
+  authDomain: "clockify-90646.firebaseapp.com",
+  projectId: "clockify-90646",
+  storageBucket: "clockify-90646.firebasestorage.app",
+  messagingSenderId: "315224623441",
+  appId: "1:315224623441:web:73c39fcb7669302e522b70",
+  measurementId: "G-YG4M5MMQRL",
 };
 
 // Initialize Firebase
