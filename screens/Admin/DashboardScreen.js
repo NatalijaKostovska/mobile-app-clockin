@@ -6,13 +6,10 @@ import {
   StatusBar,
 } from 'react-native';
 import NavigationMenu from '../NavigationMenu';
-import { useDispatch, useSelector } from 'react-redux';
-import { increment, decrement, incrementByAmount } from '../../redux/slices/counterSlice';
+import { useNavigate } from 'react-router-native';
 
 const DashboardScreen = () => {
-  const count = useSelector((state) => state.counter.value);
-  const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -23,8 +20,7 @@ const DashboardScreen = () => {
           What would you like to do today?
         </Text>
         <View>
-          <Text style={styles.headerText}>{count}</Text>
-          <Button title="Increment" onPress={() => dispatch(increment())} />
+          <Button title="log out" onPress={() => navigate('login')} />
           <Button title="Decrement" onPress={() => dispatch(decrement())} />
           <Button title="Increment by 5" onPress={() => dispatch(incrementByAmount(5))} />
         </View>

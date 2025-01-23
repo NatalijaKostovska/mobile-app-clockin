@@ -8,20 +8,66 @@ import EmployeeDashboardScreen from '../screens/Employer/EmployeeDashboardScreen
 import AddNewEmployee from '../screens/Admin/AddNewEmployee';
 import EmployeeEditScreen from '../screens/Admin/EmployeeEditScreen';
 import EmployeeTimeline from '../screens/Employer/EmployeeTimeline';
+import { AuthProvider } from '../context/AuthContext';
+import { ProtectedRoute } from './ProtectedRoute';
 
 export default function AppNavigator() {
   return (
-    <NativeRouter>
-      <Routes>
-        <Route path="/" element={<DashboardScreen />} />
-        <Route path="/list-of-employees" element={<ListOfEmployees />} />
-        <Route path="/sign-up" element={<CreateAccountScreen />} />
-        <Route path='/login' element={<LoginScreen />} />
-        <Route path='/employee-dashboard' element={<EmployeeDashboardScreen />} />
-        <Route path='/add-new-employee' element={<AddNewEmployee />} />
-        <Route path='/employee-edit' element={<EmployeeEditScreen />} />
-        <Route path='/worked-timeline' element={<EmployeeTimeline />} />
-      </Routes>
-    </NativeRouter>
+      <NativeRouter>
+        <Routes>
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/sign-up" element={<CreateAccountScreen />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <DashboardScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/list-of-employees"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <ListOfEmployees />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-new-employee"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AddNewEmployee />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employee-edit"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <EmployeeEditScreen />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Employee Routes */}
+          <Route
+            path="/employee-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['employee']}>
+                <EmployeeDashboardScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/worked-timeline"
+            element={
+              <ProtectedRoute allowedRoles={['employee']}>
+                <EmployeeTimeline />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </NativeRouter>
   );
 }

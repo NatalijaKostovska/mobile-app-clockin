@@ -40,7 +40,7 @@ const ListOfEmployees = () => {
       <StatusBar barStyle="light-content" />
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigate('/')}
+          onPress={() => navigate('/dashboard')}
           style={styles.backButton}
         >
           <Ionicons name="arrow-back" size={24} color="#fff" />

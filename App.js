@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import AppNavigator from './navigation/AppNavigator';
-import { Provider } from 'react-redux';
-import store from './redux/store';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 
 export default function App() {
-  return (
-    <Provider store={store}>
-    <AppNavigator/>
-    </Provider>
+  return ( 
+      <AuthProvider>
+         <AppNavigator/>
+      </AuthProvider>
 
   ); 
 }

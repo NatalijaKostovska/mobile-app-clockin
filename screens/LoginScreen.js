@@ -1,36 +1,95 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Alert, Button } from 'react-native';
+import { useNavigate } from 'react-router-native';
+import { auth } from '../firebase/firebaseConfig'; // Ensure this points to your Firebase config file
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Ionicons } from '@expo/vector-icons';
+import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = () => {
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton}>
-        {/* Add your back navigation logic here */}
-        <Text style={styles.backButtonText}>←</Text>
-      </TouchableOpacity>
+  const { setAuthState, authState } = useContext(AuthContext);
 
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Email and password are required.");
+      return;
+    }
+    try {
+      setLoading(true);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+      setAuthState({
+        user,
+        token,
+        isAdmin: user.email === 'admin@example.com', // Example condition for admin
+      });
+      Alert.alert("Success", "Welcome back!");
+      user.email === 'admin@example.com' ? navigate('/dashboard') : navigate('/employee-dashboard');
+    } catch (error) {
+      Alert.alert("Error", error.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>Logging in...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container} >
+      <StatusBar barStyle="light-content" />
       <Text style={styles.title}>Welcome back</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="username"
+        placeholder="Email"
         placeholderTextColor="#A0A0A0"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
       />
+      <View style={styles.passwordContainer}>
+      
       <TextInput
-        style={styles.input}
+        style={styles.password}
         placeholder="Password"
         placeholderTextColor="#A0A0A0"
-        secureTextEntry={true}
+        secureTextEntry={!passwordVisible}
+        value={password}
+        onChangeText={setPassword}
       />
+       <TouchableOpacity
+            onPress={() => setPasswordVisible(!passwordVisible)}
+            style={styles.eyeButton}
+          >
+            <Ionicons
+              name={passwordVisible ? "eye-off" : "eye"}
+              size={24}
+              color="#999"
+            />
+          </TouchableOpacity>
+        
+        </View>
 
-      <TouchableOpacity>
-        <Text style={styles.forgotPassword}>Forgot password?</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Log in</Text>
       </TouchableOpacity>
-    </View>
+      <TouchableOpacity style={styles.signUpButton} onPress={() => navigate('/sign-up')}>
+        <Text style={styles.signUpButtonText}>Don't have an account? Sign up</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
@@ -40,15 +99,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212', // Dark background
     paddingHorizontal: 20,
     justifyContent: 'center',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 50,
-    left: 20,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: 'white',
   },
   title: {
     fontSize: 28,
@@ -64,12 +114,21 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 15,
     fontSize: 16,
+    height: 60,
   },
-  forgotPassword: {
-    color: '#A0A0A0',
-    textAlign: 'right',
-    marginBottom: 30,
-    fontSize: 14,
+  password: {
+    backgroundColor: '#1E1E1E',
+    color: 'white',
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    height: 60,
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: 10,
+    top: 17,
   },
   loginButton: {
     backgroundColor: '#0066FF',
@@ -81,6 +140,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  signUpButton: {
+    marginTop: 20,
+  },
+  signUpButtonText: {
+    color: '#A0A0A0',
+    textAlign: 'center',
+    fontSize: 16,
   },
 });
 

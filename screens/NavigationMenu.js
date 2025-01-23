@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
   const location = useLocation();
 
   const adminNavItems = [
-    { name: 'Dashboard', icon: 'home', path: '/' },
+    { name: 'Dashboard', icon: 'home', path: '/dashboard' },
     { name: 'Team', icon: 'people', path: '/list-of-employees' },
     // { name: 'Time', icon: 'time', path: '/time-tracking' },
     { name: 'Export', icon: 'download', path: '/export' },
@@ -22,7 +22,7 @@ import { Ionicons } from '@expo/vector-icons';
   ];
 
   const navItems = isAdmin ? adminNavItems : employeeNavItems;
-console.log(employeeNavItems, isAdmin)
+
   const handleNavigation = (path) => {
     if (path === '/login') {
         navigate('/login');
