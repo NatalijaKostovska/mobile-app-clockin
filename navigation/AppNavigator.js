@@ -18,7 +18,7 @@ export default function AppNavigator() {
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/sign-up" element={<CreateAccountScreen />} />
           <Route
-            path="/dashboard"
+            path="/"
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <DashboardScreen />

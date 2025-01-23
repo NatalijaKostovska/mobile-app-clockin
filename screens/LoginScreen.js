@@ -28,10 +28,10 @@ const LoginScreen = () => {
       setAuthState({
         user,
         token,
-        isAdmin: user.email === 'admin@example.com', // Example condition for admin
+        isAdmin: user.email === 'natalija_kostovska1@hotmail.com',
       });
       Alert.alert("Success", "Welcome back!");
-      user.email === 'admin@example.com' ? navigate('/dashboard') : navigate('/employee-dashboard');
+      user.email === 'natalija_kostovska1@hotmail.com' ? navigate('/') : navigate('/employee-dashboard');
     } catch (error) {
       Alert.alert("Error", error.message || "Something went wrong.");
     } finally {

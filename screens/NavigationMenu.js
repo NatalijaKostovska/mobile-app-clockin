@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
   const location = useLocation();
 
   const adminNavItems = [
-    { name: 'Dashboard', icon: 'home', path: '/dashboard' },
+    { name: 'Dashboard', icon: 'home', path: '/' },
     { name: 'Team', icon: 'people', path: '/list-of-employees' },
     // { name: 'Time', icon: 'time', path: '/time-tracking' },
     { name: 'Export', icon: 'download', path: '/export' },

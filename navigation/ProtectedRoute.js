@@ -11,7 +11,7 @@ export const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   if (allowedRoles && allowedRoles.includes(user.role)) {
-    return <Navigate to={user.email === 'natalija_kostovska1@hotmail.com' ? '/dashboard' : '/employee-dashboard'} replace />;
+    return <Navigate to={user.email === 'natalija_kostovska1@hotmail.com' ? '/' : '/employee-dashboard'} replace />;
   }
 
   return children;
