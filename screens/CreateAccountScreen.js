@@ -18,11 +18,11 @@ import { collection, doc, setDoc } from "firebase/firestore";
 const CreateAccountScreen = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [password, setPassword] = useState("");
   const [userDetails, setUserDetails] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    password: "",
     phoneNumber: "",
   });
 
@@ -31,7 +31,7 @@ const CreateAccountScreen = () => {
   const handleSignUp = async () => {
     setLoading(true);
 
-    if (!userDetails.email || !userDetails.password) {
+    if (!userDetails.email || !password) {
       Alert.alert("Error", "Email and password are required.");
       return;
     }
@@ -40,7 +40,7 @@ const CreateAccountScreen = () => {
       const userCredentials = await createUserWithEmailAndPassword(
         auth,
         userDetails.email,
-        userDetails.password
+        password
       );
 
       const docRef = doc(collection(db, "users"));
@@ -92,8 +92,8 @@ const CreateAccountScreen = () => {
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Password"
-            value={userDetails.password}
-            onChangeText={(value) => handleUserDetailsChange(value, "password")}
+            value={password}
+            onChangeText={(value) => setPassword(value)}
             secureTextEntry={!passwordVisible}
             style={[styles.input, styles.passwordInput, { marginBottom: 0 }]}
           />
