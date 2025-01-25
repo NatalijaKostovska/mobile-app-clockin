@@ -5,12 +5,13 @@ import { auth } from '../firebase/firebaseConfig'; // Ensure this points to your
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../context/AuthContext';
+import { getUserData } from '../hooks/getUserData';
 
 const LoginScreen = () => {
   const { setAuthState, authState } = useContext(AuthContext);
 
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('natalija_kostovska1@hotmail.com');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -25,8 +26,9 @@ const LoginScreen = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const token = await user.getIdToken();
+      const userData = await getUserData(user.uid)
       setAuthState({
-        user,
+        user: userData,
         token,
         isAdmin: user.email === 'natalija_kostovska1@hotmail.com',
       });
@@ -38,7 +40,6 @@ const LoginScreen = () => {
       setLoading(false);
     }
   };
-
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
