@@ -1,5 +1,13 @@
-import { db } from './firebaseConfig';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { db } from "./firebaseConfig";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+} from "firebase/firestore";
 
 // Add data to a collection
 export const addItem = async (collectionName, data) => {
@@ -14,7 +22,7 @@ export const addItem = async (collectionName, data) => {
 // Get all items from a collection
 export const getItems = async (collectionName) => {
   try {
-    const querySnapshot = await getDocs(collection(db, collectionName));
+    const querySnapshot = await getDocs(query(collection(db, collectionName)));
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     throw error.message;
