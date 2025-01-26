@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   Text,
@@ -9,37 +9,48 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import NavigationMenu from '../NavigationMenu';
+import { useState, useEffect } from 'react';
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
+import { AuthContext } from '../../context/AuthContext';
+import { db } from '../../firebase/firebaseConfig';
 
 const EmployeeTimeline = () => {
-  // Sample timeline data
-  const timelineData = [
-    {
-      month: 'January 2024',
-      totalHours: 176,
-      regularHours: 160,
-      overtime: 16,
-      dailyRecords: [
-        { date: 'Jan 15', hours: 9, status: 'completed' },
-        { date: 'Jan 14', hours: 8, status: 'completed' },
-        { date: 'Jan 13', hours: 8, status: 'completed' },
-        { date: 'Jan 12', hours: 10, status: 'completed' },
-        { date: 'Jan 11', hours: 8, status: 'completed' },
-      ]
-    },
-    {
-      month: 'December 2023',
-      totalHours: 168,
-      regularHours: 160,
-      overtime: 8,
-      dailyRecords: [
-        { date: 'Dec 31', hours: 8, status: 'completed' },
-        { date: 'Dec 30', hours: 9, status: 'completed' },
-        { date: 'Dec 29', hours: 8, status: 'completed' },
-        { date: 'Dec 28', hours: 8, status: 'completed' },
-        { date: 'Dec 27', hours: 8, status: 'completed' },
-      ]
-    }
-  ];
+  const { authState } = useContext(AuthContext);
+  const [timelineData, setTimelineData] = useState([]);
+
+  useEffect(() => {
+    const fetchTimelineData = async () => {
+      try {
+        const userClockedRef = collection(db, 'user-clocked');
+        const q = query(
+          userClockedRef,
+          where('userId', '==', authState.user.id)
+        );
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map((doc) => {
+          const record = doc.data();
+          const startTime = new Date(record.startTime);
+          const endTime = new Date(record.endTime);
+          const diffInMilliseconds = endTime - startTime;
+          const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
+
+          return {
+            ...record,
+            diffInHours,
+          };
+        });
+      } catch (error) {
+        console.error('Error fetching timeline data:', error);
+      }
+      fetchTimelineData();
+    };
+  }, [authState.userId]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,15 +59,14 @@ const EmployeeTimeline = () => {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {/* Monthly Summary Cards */}
-        {timelineData.map((monthData, index) => (
+        {timelineData?.map((monthData, index) => (
           <View key={index} style={styles.monthCard}>
             <View style={styles.monthHeader}>
-              <Text style={styles.monthTitle}>{monthData.month}</Text>
+              <Text style={styles.monthTitle}>{monthData?.month}</Text>
               <View style={styles.totalHoursContainer}>
                 <Ionicons name="time-outline" size={20} color="#007AFF" />
                 <Text style={styles.totalHoursText}>
-                  {monthData.totalHours}h total
+                  {monthData?.totalHours}h total
                 </Text>
               </View>
             </View>
@@ -64,30 +74,41 @@ const EmployeeTimeline = () => {
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>Regular Hours</Text>
-                <Text style={styles.statValue}>{monthData.regularHours}h</Text>
+                <Text style={styles.statValue}>{monthData?.regularHours}h</Text>
               </View>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>Overtime</Text>
-                <Text style={styles.statValue}>{monthData.overtime}h</Text>
+                <Text style={styles.statValue}>{monthData?.overtime}h</Text>
               </View>
             </View>
 
             {/* Daily Records */}
             <View style={styles.dailyRecordsContainer}>
               <Text style={styles.sectionTitle}>Daily Records</Text>
-              {monthData.dailyRecords.map((record, recordIndex) => (
+              {monthData?.dailyRecords?.map((record, recordIndex) => (
                 <View key={recordIndex} style={styles.dailyRecord}>
                   <View style={styles.dateContainer}>
                     <Text style={styles.dateText}>{record.date}</Text>
-                    <View style={[
-                      styles.statusIndicator,
-                      { backgroundColor: record.status === 'completed' ? '#34C759' : '#FF9500' }
-                    ]} />
+                    <View
+                      style={[
+                        styles.statusIndicator,
+                        {
+                          backgroundColor:
+                            record.status === 'completed'
+                              ? '#34C759'
+                              : '#FF9500',
+                        },
+                      ]}
+                    />
                   </View>
                   <View style={styles.hoursContainer}>
                     <Text style={styles.hoursText}>{record.hours} hours</Text>
                     <TouchableOpacity style={styles.detailsButton}>
-                      <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
+                      <Ionicons
+                        name="chevron-forward"
+                        size={20}
+                        color="#8E8E93"
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
