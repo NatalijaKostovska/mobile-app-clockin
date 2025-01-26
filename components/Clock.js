@@ -30,7 +30,6 @@ const Clock = () => {
   const saveClockInInfo = async (docId) => {
     const userId = authState.user.id;
     const docRef = doc(collection(db, 'users'), userId);
-    console.log('docId', docId);
     try {
       await updateDoc(docRef, {
         userClockId: docId,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,22 +8,22 @@ import {
   SafeAreaView,
   StatusBar,
   Alert,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigate } from "react-router-native";
-import { auth, db } from "../firebase/firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, doc, setDoc } from "firebase/firestore";
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigate } from 'react-router-native';
+import { auth, db } from '../firebase/firebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, doc, setDoc } from 'firebase/firestore';
 
 const CreateAccountScreen = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [userDetails, setUserDetails] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,7 @@ const CreateAccountScreen = () => {
     setLoading(true);
 
     if (!userDetails.email || !password) {
-      Alert.alert("Error", "Email and password are required.");
+      Alert.alert('Error', 'Email and password are required.');
       return;
     }
 
@@ -43,20 +43,20 @@ const CreateAccountScreen = () => {
         password
       );
 
-      const docRef = doc(collection(db, "users"));
+      const docRef = doc(collection(db, 'users'));
       const docId = docRef.id;
 
       await setDoc(docRef, {
         ...userDetails,
         uid: userCredentials.user.uid,
         id: docId,
-        roleId: "LrODYlSXmJtEPzzoam2w",
+        isAdmin: false, //all users are employees by default
       });
 
-      Alert.alert("Success", "User account created!");
-      navigate("/login");
+      Alert.alert('Success', 'User account created!');
+      navigate('/login');
     } catch (error) {
-      Alert.alert("Error", error.message);
+      Alert.alert('Error', error.message);
       setLoading(false);
     }
 
@@ -86,7 +86,7 @@ const CreateAccountScreen = () => {
         <TextInput
           placeholder="Email"
           value={userDetails.email}
-          onChangeText={(value) => handleUserDetailsChange(value, "email")}
+          onChangeText={(value) => handleUserDetailsChange(value, 'email')}
           keyboardType="email-address"
           style={styles.input}
         />
@@ -103,7 +103,7 @@ const CreateAccountScreen = () => {
             style={styles.eyeButton}
           >
             <Ionicons
-              name={passwordVisible ? "eye-off" : "eye"}
+              name={passwordVisible ? 'eye-off' : 'eye'}
               size={24}
               color="#999"
             />
@@ -117,20 +117,20 @@ const CreateAccountScreen = () => {
         <TextInput
           placeholder="First name"
           value={userDetails.firstName}
-          onChangeText={(value) => handleUserDetailsChange(value, "firstName")}
+          onChangeText={(value) => handleUserDetailsChange(value, 'firstName')}
           style={styles.input}
         />
         <TextInput
           placeholder="Last name"
           value={userDetails.lastName}
-          onChangeText={(value) => handleUserDetailsChange(value, "lastName")}
+          onChangeText={(value) => handleUserDetailsChange(value, 'lastName')}
           style={styles.input}
         />
         <TextInput
           placeholder="Phone number"
           value={userDetails.phoneNumber}
           onChangeText={(value) =>
-            handleUserDetailsChange(value, "phoneNumber")
+            handleUserDetailsChange(value, 'phoneNumber')
           }
           style={styles.input}
         />
@@ -139,7 +139,7 @@ const CreateAccountScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.signUpButton}
-          onPress={() => navigate("/login")}
+          onPress={() => navigate('/login')}
         >
           <Text style={styles.logInButtonText}>
             Do you have an account? Log in
@@ -153,67 +153,67 @@ const CreateAccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#121212", // Dark background
+    backgroundColor: '#121212', // Dark background
     padding: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
-    fontWeight: "600",
-    color: "#fff",
-    textAlign: "center",
+    fontWeight: '600',
+    color: '#fff',
+    textAlign: 'center',
     marginBottom: 30,
   },
   label: {
     fontSize: 14,
-    color: "#fff",
+    color: '#fff',
     marginBottom: 5,
   },
   input: {
-    backgroundColor: "#1e1e1e",
-    color: "#fff",
+    backgroundColor: '#1e1e1e',
+    color: '#fff',
     borderRadius: 8,
     padding: 15,
     marginBottom: 20,
     fontSize: 14,
   },
   passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   passwordInput: {
     flex: 1,
   },
   eyeButton: {
-    position: "absolute",
+    position: 'absolute',
     right: 10,
     top: 10,
   },
   eyeText: {
-    color: "#999",
+    color: '#999',
     fontSize: 18,
   },
   button: {
-    backgroundColor: "#007BFF",
+    backgroundColor: '#007BFF',
     padding: 15,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   footerText: {
     fontSize: 12,
-    color: "#999",
-    textAlign: "center",
+    color: '#999',
+    textAlign: 'center',
     marginTop: 20,
   },
   logInButtonText: {
-    color: "#A0A0A0",
-    textAlign: "center",
+    color: '#A0A0A0',
+    textAlign: 'center',
     marginTop: 30,
     fontSize: 16,
   },

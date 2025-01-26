@@ -19,6 +19,7 @@ import {
 } from 'firebase/firestore';
 import { AuthContext } from '../../context/AuthContext';
 import { db } from '../../firebase/firebaseConfig';
+import Layout from '../../components/Layout';
 
 const EmployeeTimeline = () => {
   const { authState } = useContext(AuthContext);
@@ -53,7 +54,7 @@ const EmployeeTimeline = () => {
   }, [authState.userId]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <Layout isAdmin={authState.user.isAdmin}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Working Timeline</Text>
       </View>
@@ -117,8 +118,7 @@ const EmployeeTimeline = () => {
           </View>
         ))}
       </ScrollView>
-      <NavigationMenu isAdmin={true} />
-    </SafeAreaView>
+    </Layout>
   );
 };
 

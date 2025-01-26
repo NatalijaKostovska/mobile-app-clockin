@@ -1,18 +1,19 @@
 import { View } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import NavigationMenu from '../NavigationMenu';
 import Clock from '../../components/Clock';
+import { AuthContext } from '../../context/AuthContext';
+import Layout from '../../components/Layout';
 
 const DashboardScreen = () => {
+  const { authState } = useContext(AuthContext);
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+    <Layout isAdmin={authState.user.isAdmin}>
       <View style={styles.clockView}>
         <Clock />
       </View>
-      <NavigationMenu isAdmin={true} />
-    </SafeAreaView>
+    </Layout>
   );
 };
 

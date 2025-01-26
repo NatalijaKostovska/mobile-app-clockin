@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,35 +8,34 @@ import {
   Image,
   SafeAreaView,
   StatusBar,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigate } from "react-router-native";
-import { getItems } from "../../firebase/firestoreUtils";
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigate } from 'react-router-native';
+import { getItems } from '../../firebase/firestoreUtils';
+import Layout from '../../components/Layout';
+import { AuthContext } from '../../context/AuthContext';
 
 const ListOfEmployees = () => {
+  const { authState } = useContext(AuthContext);
+
   const [employeesList, setEmployeesList] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleGetUsers = async () => {
-      const usersList = await getItems("users");
+      const usersList = await getItems('users');
       setEmployeesList(usersList);
     };
 
     handleGetUsers();
   }, []);
 
-  const employees = [
-    { id: "1", name: "Samantha S.", hours: "40 hours, 4 days" },
-    { id: "2", name: "Liam M.", hours: "20 hours, 5 days" },
-    { id: "3", name: "Sophia H.", hours: "30 hours, 4 days" },
-    { id: "4", name: "William R.", hours: "20 hours, 3 days" },
-  ];
-
   const renderEmployee = ({ item }) => (
     <View style={styles.employeeRow}>
-      <Image
-        source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
+      <Ionicons
+        name="person-circle-outline"
+        size={50}
+        color="#999"
         style={styles.avatar}
       />
       <View style={styles.employeeInfo}>
@@ -50,22 +49,15 @@ const ListOfEmployees = () => {
           name="create-outline"
           size={24}
           color="#0066FF"
-          onPress={() => navigate("/employee-edit")}
+          onPress={() => navigate('/employee-edit/' + item.id)}
         />
       </TouchableOpacity>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+    <Layout isAdmin={authState.user.isAdmin}>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigate("/")}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>List of employees</Text>
       </View>
       <FlatList
@@ -74,20 +66,14 @@ const ListOfEmployees = () => {
         renderItem={renderEmployee}
         contentContainerStyle={styles.list}
       />
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => navigate("/add-new-employee")}
-      >
-        <Text style={styles.addButtonText}>Add new employee</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#121212", // Dark background
+    backgroundColor: '#121212', // Dark background
     paddingTop: 40,
   },
   backButton: {
@@ -95,26 +81,26 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   headerTitle: {
-    color: "#dedede",
+    color: '#dedede',
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: '600',
     marginLeft: 8,
   },
   list: {
     paddingBottom: 100,
   },
   employeeRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#1E1E1E",
+    borderBottomColor: '#1E1E1E',
   },
   avatar: {
     width: 50,
@@ -127,31 +113,31 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "white",
+    fontWeight: 'bold',
+    color: 'white',
   },
   hours: {
     fontSize: 14,
-    color: "#A0A0A0",
+    color: '#A0A0A0',
   },
   editIcon: {
     fontSize: 20,
-    color: "#0066FF",
+    color: '#0066FF',
   },
   addButton: {
-    backgroundColor: "#0066FF",
+    backgroundColor: '#0066FF',
     borderRadius: 8,
     paddingVertical: 15,
-    alignItems: "center",
-    position: "absolute",
+    alignItems: 'center',
+    position: 'absolute',
     bottom: 30,
     left: 20,
     right: 20,
   },
   addButtonText: {
-    color: "white",
+    color: 'white',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 

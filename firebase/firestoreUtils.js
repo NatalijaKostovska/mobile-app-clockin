@@ -1,4 +1,4 @@
-import { db } from "./firebaseConfig";
+import { db } from './firebaseConfig';
 import {
   collection,
   addDoc,
@@ -7,7 +7,7 @@ import {
   deleteDoc,
   doc,
   query,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 // Add data to a collection
 export const addItem = async (collectionName, data) => {

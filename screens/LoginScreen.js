@@ -44,7 +44,6 @@ const LoginScreen = () => {
       setAuthState({
         user: userData,
         token,
-        isAdmin: user.email === 'natalija_kostovska1@hotmail.com',
       });
       Alert.alert('Success', 'Welcome back!');
       user.email === 'natalija_kostovska1@hotmail.com'

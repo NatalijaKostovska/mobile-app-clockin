@@ -6,7 +6,6 @@ export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     user: null,
     token: null,
-    isAdmin: false,
   });
 
   const setUser = (user) => {
@@ -23,15 +22,10 @@ export const AuthProvider = ({ children }) => {
     }));
   };
 
-  const setIsAdmin = (isAdmin) => {
-    setAuthState((prev) => ({
-      ...prev,
-      isAdmin,
-    }));
-  };
-
   return (
-    <AuthContext.Provider value={{ authState, setUser, setToken, setIsAdmin, setAuthState}}>
+    <AuthContext.Provider
+      value={{ authState, setUser, setToken, setAuthState }}
+    >
       {children}
     </AuthContext.Provider>
   );
