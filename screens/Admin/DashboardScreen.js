@@ -1,29 +1,25 @@
-import { Button, Text, View } from 'react-native';
-import React, { useContext } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-} from 'react-native';
+import { View } from 'react-native';
+import React from 'react';
+import { StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import NavigationMenu from '../NavigationMenu';
 import Clock from '../../components/Clock';
 
 const DashboardScreen = () => {
   return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" />  
-        <View style={styles.clockView}>
-          <Clock />
-        </View>
-        <NavigationMenu isAdmin={false} />
-      </SafeAreaView>
-);
-}
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.clockView}>
+        <Clock />
+      </View>
+      <NavigationMenu isAdmin={true} />
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // Dark background
+    backgroundColor: '#121212',
     paddingHorizontal: 20,
   },
   clockView: {

@@ -1,10 +1,18 @@
-import { auth } from './firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from "./firebaseConfig";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 // Sign up a new user
 export const signUp = async (email, password) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     return userCredential.user;
   } catch (error) {
     throw error.message;
@@ -14,7 +22,11 @@ export const signUp = async (email, password) => {
 // Sign in a user
 export const signIn = async (email, password) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     return userCredential.user;
   } catch (error) {
     throw error.message;
@@ -25,6 +37,7 @@ export const signIn = async (email, password) => {
 export const logOut = async () => {
   try {
     await signOut(auth);
+    navigate("/login");
   } catch (error) {
     throw error.message;
   }

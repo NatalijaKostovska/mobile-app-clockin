@@ -117,7 +117,7 @@ const EmployeeTimeline = () => {
           </View>
         ))}
       </ScrollView>
-      <NavigationMenu isAdmin={false} />
+      <NavigationMenu isAdmin={true} />
     </SafeAreaView>
   );
 };

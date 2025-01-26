@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  StatusBar,
-  SafeAreaView,
-} from 'react-native';
+import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import NavigationMenu from '../NavigationMenu';
 import Clock from '../../components/Clock';
 
@@ -17,7 +10,7 @@ const EmployeeDashboardScreen = () => {
       <View style={styles.clockView}>
         <Clock />
       </View>
-      <NavigationMenu isAdmin={false} />
+      <NavigationMenu isAdmin={true} />
     </SafeAreaView>
   );
 };

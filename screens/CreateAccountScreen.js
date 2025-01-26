@@ -50,6 +50,7 @@ const CreateAccountScreen = () => {
         ...userDetails,
         uid: userCredentials.user.uid,
         id: docId,
+        roleId: "LrODYlSXmJtEPzzoam2w",
       });
 
       Alert.alert("Success", "User account created!");

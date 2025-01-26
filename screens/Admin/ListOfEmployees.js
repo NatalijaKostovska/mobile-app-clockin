@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,29 +8,50 @@ import {
   Image,
   SafeAreaView,
   StatusBar,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigate } from 'react-router-native';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigate } from "react-router-native";
+import { getItems } from "../../firebase/firestoreUtils";
 
 const ListOfEmployees = () => {
+  const [employeesList, setEmployeesList] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleGetUsers = async () => {
+      const usersList = await getItems("users");
+      setEmployeesList(usersList);
+    };
+
+    handleGetUsers();
+  }, []);
+
   const employees = [
-    { id: '1', name: 'Samantha S.', hours: '40 hours, 4 days' },
-    { id: '2', name: 'Liam M.', hours: '20 hours, 5 days' },
-    { id: '3', name: 'Sophia H.', hours: '30 hours, 4 days' },
-    { id: '4', name: 'William R.', hours: '20 hours, 3 days' },
+    { id: "1", name: "Samantha S.", hours: "40 hours, 4 days" },
+    { id: "2", name: "Liam M.", hours: "20 hours, 5 days" },
+    { id: "3", name: "Sophia H.", hours: "30 hours, 4 days" },
+    { id: "4", name: "William R.", hours: "20 hours, 3 days" },
   ];
 
   const renderEmployee = ({ item }) => (
     <View style={styles.employeeRow}>
-      <Image   source={{ uri: 'https://randomuser.me/api/portraits/men/1.jpg' }}
- style={styles.avatar} />
+      <Image
+        source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
+        style={styles.avatar}
+      />
       <View style={styles.employeeInfo}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.hours}>{item.hours}</Text>
+        <Text style={styles.name}>
+          {item.firstName} {item.lastName}
+        </Text>
+        {/* <Text style={styles.hours}>{5}</Text> */}
       </View>
       <TouchableOpacity>
-        <Ionicons name="create-outline" size={24} color="#0066FF" onPress={() => navigate("/employee-edit")} />
+        <Ionicons
+          name="create-outline"
+          size={24}
+          color="#0066FF"
+          onPress={() => navigate("/employee-edit")}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -40,23 +61,22 @@ const ListOfEmployees = () => {
       <StatusBar barStyle="light-content" />
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigate('/')}
+          onPress={() => navigate("/")}
           style={styles.backButton}
         >
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>List of employees</Text>
       </View>
-      {/* Employee list */}
       <FlatList
-        data={employees}
+        data={employeesList}
         keyExtractor={(item) => item.id}
         renderItem={renderEmployee}
         contentContainerStyle={styles.list}
       />
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigate('/add-new-employee')}
+        onPress={() => navigate("/add-new-employee")}
       >
         <Text style={styles.addButtonText}>Add new employee</Text>
       </TouchableOpacity>
@@ -67,7 +87,7 @@ const ListOfEmployees = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // Dark background
+    backgroundColor: "#121212", // Dark background
     paddingTop: 40,
   },
   backButton: {
@@ -75,26 +95,26 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   headerTitle: {
-    color: '#dedede',
+    color: "#dedede",
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: 8,
   },
   list: {
-    paddingBottom: 100, // Space for the Add Employee button
+    paddingBottom: 100,
   },
   employeeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E1E1E',
+    borderBottomColor: "#1E1E1E",
   },
   avatar: {
     width: 50,
@@ -107,31 +127,31 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   hours: {
     fontSize: 14,
-    color: '#A0A0A0', // Light gray text
+    color: "#A0A0A0",
   },
   editIcon: {
     fontSize: 20,
-    color: '#0066FF', // Blue color for the edit icon
+    color: "#0066FF",
   },
   addButton: {
-    backgroundColor: '#0066FF',
+    backgroundColor: "#0066FF",
     borderRadius: 8,
     paddingVertical: 15,
-    alignItems: 'center',
-    position: 'absolute',
+    alignItems: "center",
+    position: "absolute",
     bottom: 30,
     left: 20,
     right: 20,
   },
   addButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
