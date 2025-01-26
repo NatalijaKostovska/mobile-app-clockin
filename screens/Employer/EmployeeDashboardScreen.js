@@ -1,15 +1,19 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+  SafeAreaView,
+} from 'react-native';
 import NavigationMenu from '../NavigationMenu';
-import { useUser } from '../../context/UserContext';
 import Clock from '../../components/Clock';
 
 const EmployeeDashboardScreen = () => {
-    
-
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />  
+      <StatusBar barStyle="light-content" />
       <View style={styles.clockView}>
         <Clock />
       </View>

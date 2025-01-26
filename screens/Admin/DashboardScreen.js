@@ -6,9 +6,6 @@ import {
   StatusBar,
 } from 'react-native';
 import NavigationMenu from '../NavigationMenu';
-import { useNavigate } from 'react-router-native';
-import { useUser } from '../../context/UserContext';
-import { AuthContext } from '../../context/AuthContext';
 import Clock from '../../components/Clock';
 
 const DashboardScreen = () => {
