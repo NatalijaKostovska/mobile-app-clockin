@@ -1,16 +1,14 @@
-import React, { useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { AuthContext } from '../context/AuthContext';
+import React, { useContext, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { AuthContext } from "../context/AuthContext";
 import {
   collection,
   doc,
-  getDocs,
-  query,
   setDoc,
+  Timestamp,
   updateDoc,
-  where,
-} from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
+} from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 
 const Clock = () => {
   const { authState, setAuthState } = useContext(AuthContext);
@@ -29,7 +27,7 @@ const Clock = () => {
 
   const saveClockInInfo = async (docId) => {
     const userId = authState.user.id;
-    const docRef = doc(collection(db, 'users'), userId);
+    const docRef = doc(collection(db, "users"), userId);
     try {
       await updateDoc(docRef, {
         userClockId: docId,
@@ -39,15 +37,16 @@ const Clock = () => {
         user: { ...authState.user, userClockId: docId },
       });
     } catch (error) {
-      console.error('Error clocking in:', error);
+      console.error("Error clocking in:", error);
       throw error;
     }
   };
 
   const handleClockIn = async () => {
     const userId = authState.user.id;
-    const clockInTime = new Date().toLocaleString();
-    let docRef = doc(collection(db, 'user-clocked'));
+
+    const clockInTime = Timestamp.fromDate(new Date());
+    let docRef = doc(collection(db, "user-clocked"));
     try {
       await setDoc(
         docRef,
@@ -58,31 +57,20 @@ const Clock = () => {
         { merge: true }
       );
     } catch (error) {
-      console.error('Error clocking in:', error);
+      console.error("Error clocking in:", error);
       throw error;
     }
     const docId = docRef.id;
-    console.log('docId ==>', docId);
     await saveClockInInfo(docId);
   };
 
   const handleClockOut = async () => {
-    const clockOutTime = new Date().toLocaleString();
-    console.log('authState.user.userClockId', authState);
+    const clockOutTime = Timestamp.fromDate(new Date());
     const docRef = doc(
-      collection(db, 'user-clocked'),
+      collection(db, "user-clocked"),
       authState.user.userClockId
     );
-
-    // const docRef = query(
-    //   collection(db, 'user-clocked'),
-    //   where('userId', '==', authState.user.id)
-    // );
     try {
-      // const querySnapshot = await getDocs(docRef);
-      // if (!querySnapshot.empty) {
-      //   const docSnapshot = querySnapshot.docs[0];
-      //   const docRef = doc(db, 'user-clocked', docSnapshot.id);
       await updateDoc(
         docRef,
         {
@@ -90,9 +78,8 @@ const Clock = () => {
         },
         { merge: true }
       );
-      // }
     } catch (error) {
-      console.error('Error clocking out:', error);
+      console.error("Error clocking out:", error);
       throw error;
     }
     await saveClockInInfo(null);
@@ -112,7 +99,7 @@ const Clock = () => {
         disabled={isDisabled}
       >
         <Text style={styles.buttonText}>
-          {isDisabled ? 'Have a nice work day!' : 'Clock In'}
+          {isDisabled ? "Have a nice work day!" : "Clock In"}
         </Text>
       </TouchableOpacity>
 
@@ -143,55 +130,55 @@ const Clock = () => {
 const styles = StyleSheet.create({
   header: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
     marginBottom: 20,
   },
   time: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
     marginBottom: 30,
   },
   button: {
     borderRadius: 8,
     paddingVertical: 15,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 15,
   },
   primaryButton: {
-    backgroundColor: '#0066FF', // Blue button
+    backgroundColor: "#0066FF", // Blue button
   },
   secondaryButton: {
-    backgroundColor: '#1E1E1E', // Dark gray button
+    backgroundColor: "#1E1E1E", // Dark gray button
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   warningText: {
-    color: '#A0A0A0', // Light gray text
-    textAlign: 'center',
+    color: "#A0A0A0", // Light gray text
+    textAlign: "center",
     marginTop: 15,
     fontSize: 14,
   },
   footerButton: {
-    backgroundColor: '#0066FF',
+    backgroundColor: "#0066FF",
     borderRadius: 8,
     paddingVertical: 15,
-    alignItems: 'center',
-    position: 'absolute',
+    alignItems: "center",
+    position: "absolute",
     bottom: 30,
     left: 20,
     right: 20,
   },
   footerButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

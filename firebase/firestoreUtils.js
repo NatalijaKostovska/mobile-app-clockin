@@ -1,4 +1,4 @@
-import { db } from './firebaseConfig';
+import { db } from "./firebaseConfig";
 import {
   collection,
   addDoc,
@@ -7,7 +7,7 @@ import {
   deleteDoc,
   doc,
   query,
-} from 'firebase/firestore';
+} from "firebase/firestore";
 
 // Add data to a collection
 export const addItem = async (collectionName, data) => {
@@ -23,6 +23,18 @@ export const addItem = async (collectionName, data) => {
 export const getItems = async (collectionName) => {
   try {
     const querySnapshot = await getDocs(query(collection(db, collectionName)));
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+// Get all items from a collection
+export const getItemsQuery = async (collectionName, queryCondition) => {
+  try {
+    const querySnapshot = await getDocs(
+      query(collection(db, collectionName), queryCondition)
+    );
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     throw error.message;
