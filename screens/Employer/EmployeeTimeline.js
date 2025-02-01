@@ -1,122 +1,117 @@
-import React, { useContext } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import NavigationMenu from '../NavigationMenu';
-import { useState, useEffect } from 'react';
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
-import { AuthContext } from '../../context/AuthContext';
-import { db } from '../../firebase/firebaseConfig';
-import Layout from '../../components/Layout';
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { where, Timestamp } from "firebase/firestore";
+import { AuthContext } from "../../context/AuthContext";
+import Layout from "../../components/Layout";
+import { getItemsQuery } from "../../firebase/firestoreUtils";
+import moment from "moment";
 
 const EmployeeTimeline = () => {
   const { authState } = useContext(AuthContext);
-  const [timelineData, setTimelineData] = useState([]);
+  const [employeeClocks, setEmployeeClocks] = useState([]);
+  const [totalEmployeeHours, setTotalEmployeeHours] = useState(0);
 
   useEffect(() => {
-    const fetchTimelineData = async () => {
-      try {
-        const userClockedRef = collection(db, 'user-clocked');
-        const q = query(
-          userClockedRef,
-          where('userId', '==', authState.user.id)
-        );
-        const querySnapshot = await getDocs(q);
-        const data = querySnapshot.docs.map((doc) => {
-          const record = doc.data();
-          const startTime = new Date(record.startTime);
-          const endTime = new Date(record.endTime);
-          const diffInMilliseconds = endTime - startTime;
-          const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
+    const fetchEmployeeClocks = async () => {
+      const now = new Date();
+      const startOfMonth = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        1,
+        0,
+        0,
+        0
+      );
+      const startOfNextMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        1,
+        0,
+        0,
+        0
+      );
 
-          return {
-            ...record,
-            diffInHours,
-          };
-        });
-      } catch (error) {
-        console.error('Error fetching timeline data:', error);
-      }
-      fetchTimelineData();
+      const startTimestamp = Timestamp.fromDate(startOfMonth);
+      const endTimestamp = Timestamp.fromDate(startOfNextMonth);
+      const employeeClocks = await getItemsQuery(
+        "user-clocked",
+        where("userId", "==", authState.user.id),
+        where("startTime", ">=", startTimestamp),
+        where("startTime", "<", endTimestamp)
+      );
+
+      let totalMinutes = 0;
+      employeeClocks.map(
+        (item) =>
+          (totalMinutes += moment(item.endTime.toDate()).diff(
+            moment(item.startTime.toDate()),
+            "minutes"
+          ))
+      );
+
+      setTotalEmployeeHours(totalMinutes / 60);
+      setEmployeeClocks(employeeClocks);
     };
-  }, [authState.userId]);
+
+    fetchEmployeeClocks();
+  }, [authState.user.id]);
 
   return (
     <Layout isAdmin={authState.user.isAdmin}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Working Timeline</Text>
-      </View>
-
       <ScrollView style={styles.scrollView}>
-        {timelineData?.map((monthData, index) => (
-          <View key={index} style={styles.monthCard}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Working Timeline</Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Working Hours</Text>
+          <View style={styles.monthlyRecord}>
             <View style={styles.monthHeader}>
-              <Text style={styles.monthTitle}>{monthData?.month}</Text>
-              <View style={styles.totalHoursContainer}>
-                <Ionicons name="time-outline" size={20} color="#007AFF" />
-                <Text style={styles.totalHoursText}>
-                  {monthData?.totalHours}h total
+              <Text style={styles.monthName}>January</Text>
+            </View>
+            <View style={styles.hoursContainer}>
+              <View style={styles.hoursItem}>
+                <Text style={styles.hoursLabel}>Regular Hours</Text>
+                <Text style={styles.hoursValue}>
+                  {totalEmployeeHours > 40 ? 40 : totalEmployeeHours}h
+                </Text>
+              </View>
+              <View style={styles.hoursItem}>
+                <Text style={styles.hoursLabel}>Overtime</Text>
+                <Text style={styles.hoursValue}>
+                  {totalEmployeeHours > 40 ? totalEmployeeHours - 40 : 0}h
+                </Text>
+              </View>
+              <View style={styles.hoursItem}>
+                <Text style={styles.hoursLabel}>Total</Text>
+                <Text style={[styles.hoursValue, styles.totalHours]}>
+                  {totalEmployeeHours}h
                 </Text>
               </View>
             </View>
-
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Regular Hours</Text>
-                <Text style={styles.statValue}>{monthData?.regularHours}h</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Overtime</Text>
-                <Text style={styles.statValue}>{monthData?.overtime}h</Text>
-              </View>
-            </View>
-
-            {/* Daily Records */}
-            <View style={styles.dailyRecordsContainer}>
-              <Text style={styles.sectionTitle}>Daily Records</Text>
-              {monthData?.dailyRecords?.map((record, recordIndex) => (
-                <View key={recordIndex} style={styles.dailyRecord}>
-                  <View style={styles.dateContainer}>
-                    <Text style={styles.dateText}>{record.date}</Text>
-                    <View
-                      style={[
-                        styles.statusIndicator,
-                        {
-                          backgroundColor:
-                            record.status === 'completed'
-                              ? '#34C759'
-                              : '#FF9500',
-                        },
-                      ]}
-                    />
-                  </View>
-                  <View style={styles.hoursContainer}>
-                    <Text style={styles.hoursText}>{record.hours} hours</Text>
-                    <TouchableOpacity style={styles.detailsButton}>
-                      <Ionicons
-                        name="chevron-forward"
-                        size={20}
-                        color="#8E8E93"
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ))}
-            </View>
           </View>
-        ))}
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Daily Hours</Text>
+          <View style={styles.dailyRecord}>
+            <Text style={styles.dailyDate}>Date</Text>
+            <Text style={styles.dailyHours}>Hours</Text>
+          </View>
+          {employeeClocks.map((item, index) => (
+            <View key={index} style={styles.dailyRecord}>
+              <Text style={styles.dailyDate}>
+                {moment(item.startTime.toDate()).format("DD/MM/YYYY")}
+              </Text>
+              <Text style={styles.dailyHours}>
+                {moment(item.endTime.toDate()).diff(
+                  moment(item.startTime.toDate()),
+                  "minutes"
+                )}
+                min
+              </Text>
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </Layout>
   );
@@ -125,113 +120,127 @@ const EmployeeTimeline = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
-  },
-  header: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2C2C2E',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    backgroundColor: "#1C1C1E",
   },
   scrollView: {
     flex: 1,
-    marginBottom: 60,
+    marginBottom: 60, // Space for navigation menu
   },
-  monthCard: {
-    backgroundColor: '#2C2C2E',
-    margin: 16,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2C2C2E",
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginLeft: 8,
+  },
+  section: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2C2C2E",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginBottom: 16,
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    color: "#8E8E93",
+    marginBottom: 8,
+    fontSize: 14,
+  },
+  input: {
+    backgroundColor: "#2C2C2E",
+    borderRadius: 8,
+    padding: 12,
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
+  disabled: {
+    backgroundColor: "#1C1C1E",
+    opacity: 0.5,
+  },
+
+  monthlyRecord: {
+    marginBottom: 20,
+    backgroundColor: "#2C2C2E",
     borderRadius: 12,
     padding: 16,
   },
   monthHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
   },
-  monthTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  totalHoursContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  totalHoursText: {
-    color: '#007AFF',
+  monthName: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    justifyContent: "center",
   },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#1C1C1E',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+  editButton: {
+    padding: 4,
   },
-  statItem: {
+  hoursContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  hoursItem: {
     flex: 1,
-    alignItems: 'center',
   },
-  statLabel: {
-    color: '#8E8E93',
+  hoursLabel: {
+    color: "#8E8E93",
     fontSize: 12,
     marginBottom: 4,
   },
-  statValue: {
-    color: '#FFFFFF',
+  hoursValue: {
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "500",
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 12,
-  },
-  dailyRecordsContainer: {
-    marginTop: 16,
+  totalHours: {
+    color: "#007AFF",
+    fontWeight: "bold",
   },
   dailyRecord: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#3C3C3E',
+    borderBottomColor: "#2C2C2E",
   },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  dailyDate: {
+    color: "#FFFFFF",
+    fontSize: 16,
   },
-  dateText: {
-    color: '#FFFFFF',
-    fontSize: 15,
+  dailyHours: {
+    color: "#FFFFFF",
+    fontSize: 16,
   },
-  statusIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  saveButton: {
+    backgroundColor: "#007AFF",
+    margin: 16,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
   },
-  hoursContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  hoursText: {
-    color: '#8E8E93',
-    fontSize: 15,
-  },
-  detailsButton: {
-    padding: 4,
+  saveButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 
