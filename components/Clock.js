@@ -85,6 +85,26 @@ const Clock = () => {
     await saveClockInInfo(null);
   };
 
+  const handleBrakePress = async (breakType) => {
+    const pressTime = Timestamp.fromDate(new Date());
+    const docRef = doc(
+      collection(db, "user-clocked"),
+      authState.user.userClockId
+    );
+    try {
+      await updateDoc(
+        docRef,
+        {
+          [breakType]: pressTime,
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.error("Error pressing break:", error);
+      throw error;
+    }
+  };
+
   return (
     <View>
       <Text style={styles.header}>Clock In/Out</Text>
@@ -103,17 +123,26 @@ const Clock = () => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, styles.secondaryButton]}>
+      <TouchableOpacity
+        style={[styles.button, styles.secondaryButton]}
+        onPress={() => handleBrakePress("startBreak")}
+        disabled={!isDisabled}
+      >
         <Text style={styles.buttonText}>Start Break</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, styles.secondaryButton]}>
+      <TouchableOpacity
+        style={[styles.button, styles.secondaryButton]}
+        onPress={() => handleBrakePress("endBreak")}
+        disabled={!isDisabled}
+      >
         <Text style={styles.buttonText}>End Break</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.button, styles.primaryButton]}
         onPress={() => handleClockOut()}
+        disabled={!isDisabled}
       >
         <Text style={[styles.buttonText, !isDisabled && { opacity: 0.5 }]}>
           Clock Out
