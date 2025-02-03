@@ -30,11 +30,9 @@ export const getItems = async (collectionName) => {
 };
 
 // Get all items from a collection
-export const getItemsQuery = async (collectionName, queryCondition) => {
+export const getItemsQuery = async (queryRef) => {
   try {
-    const querySnapshot = await getDocs(
-      query(collection(db, collectionName), queryCondition)
-    );
+    const querySnapshot = await getDocs(queryRef);
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     throw error.message;
