@@ -10,10 +10,11 @@ import {
 import { AuthContext } from "../../context/AuthContext";
 import Layout from "../../components/Layout";
 import { useParams } from "react-router-native";
-import { getItemsQuery, updateItem } from "../../firebase/firestoreUtils";
-import { getDoc, doc, where, Timestamp } from "firebase/firestore";
+import { updateItem } from "../../firebase/firestoreUtils";
+import { getDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import moment from "moment";
+import { handleTimeCalculation } from "../../hooks/handleTime";
 
 const EmployeeEditScreen = ({ navigation }) => {
   const { id } = useParams();
@@ -24,42 +25,10 @@ const EmployeeEditScreen = ({ navigation }) => {
 
   useEffect(() => {
     const fetchEmployeeClocks = async () => {
-      const now = new Date();
-      const startOfMonth = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        1,
-        0,
-        0,
-        0
-      );
-      const startOfNextMonth = new Date(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        1,
-        0,
-        0,
-        0
-      );
+      const timeData = await handleTimeCalculation(id, 1);
 
-      const startTimestamp = Timestamp.fromDate(startOfMonth);
-      const endTimestamp = Timestamp.fromDate(startOfNextMonth);
-      const employeeClocks = await getItemsQuery(
-        "user-clocked",
-        where("userId", "==", id),
-        where("startTime", ">=", startTimestamp),
-        where("startTime", "<", endTimestamp)
-      );
-      let totalMinutes = 0;
-      employeeClocks.map(
-        (item) =>
-          (totalMinutes += moment(item.endTime.toDate()).diff(
-            moment(item.startTime.toDate()),
-            "minutes"
-          ))
-      );
-      setTotalEmployeeHours(totalMinutes / 60);
-      setEmployeeClocks(employeeClocks);
+      setTotalEmployeeHours(timeData.totalHours);
+      setEmployeeClocks(timeData.employeeClocks);
     };
 
     fetchEmployeeClocks();
