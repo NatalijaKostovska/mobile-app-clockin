@@ -1,13 +1,14 @@
-import React from 'react';
-import { NativeRouter, Route, Routes } from 'react-router-native';
-import DashboardScreen from '../screens/Admin/DashboardScreen';
-import ListOfEmployees from '../screens/Admin/ListOfEmployees';
-import CreateAccountScreen from '../screens/CreateAccountScreen';
-import LoginScreen from '../screens/LoginScreen';
-import EmployeeDashboardScreen from '../screens/Employer/EmployeeDashboardScreen';
-import EmployeeEditScreen from '../screens/Admin/EmployeeEditScreen';
-import EmployeeTimeline from '../screens/Employer/EmployeeTimeline';
-import { ProtectedRoute } from './ProtectedRoute';
+import React from "react";
+import { NativeRouter, Route, Routes } from "react-router-native";
+import DashboardScreen from "../screens/Admin/DashboardScreen";
+import ListOfEmployees from "../screens/Admin/ListOfEmployees";
+import CreateAccountScreen from "../screens/CreateAccountScreen";
+import LoginScreen from "../screens/LoginScreen";
+import EmployeeDashboardScreen from "../screens/Employer/EmployeeDashboardScreen";
+import EmployeeEditScreen from "../screens/Admin/EmployeeEditScreen";
+import EmployeeTimeline from "../screens/Employer/EmployeeTimeline";
+import { ProtectedRoute } from "./ProtectedRoute";
+import EmployeeEditHours from "../screens/Admin/EmployeeEditHours";
 
 export default function AppNavigator() {
   return (
@@ -18,7 +19,7 @@ export default function AppNavigator() {
         <Route
           path="/"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <DashboardScreen />
             </ProtectedRoute>
           }
@@ -26,7 +27,7 @@ export default function AppNavigator() {
         <Route
           path="/list-of-employees"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <ListOfEmployees />
             </ProtectedRoute>
           }
@@ -34,8 +35,16 @@ export default function AppNavigator() {
         <Route
           path="/employee-edit/:id"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <EmployeeEditScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee-edit/edit-hours/:id/:colckingId"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <EmployeeEditHours />
             </ProtectedRoute>
           }
         />
@@ -44,7 +53,7 @@ export default function AppNavigator() {
         <Route
           path="/employee-dashboard"
           element={
-            <ProtectedRoute allowedRoles={['employee']}>
+            <ProtectedRoute allowedRoles={["employee"]}>
               <EmployeeDashboardScreen />
             </ProtectedRoute>
           }
@@ -52,7 +61,7 @@ export default function AppNavigator() {
         <Route
           path="/worked-timeline"
           element={
-            <ProtectedRoute allowedRoles={['employee']}>
+            <ProtectedRoute allowedRoles={["employee"]}>
               <EmployeeTimeline />
             </ProtectedRoute>
           }

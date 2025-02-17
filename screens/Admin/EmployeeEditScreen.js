@@ -9,19 +9,21 @@ import {
 } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
 import Layout from "../../components/Layout";
-import { useParams } from "react-router-native";
+import { useNavigate, useParams } from "react-router-native";
 import { updateItem } from "../../firebase/firestoreUtils";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import moment from "moment";
 import { handleTimeCalculation } from "../../hooks/handleTime";
 
-const EmployeeEditScreen = ({ navigation }) => {
+const EmployeeEditScreen = () => {
   const { id } = useParams();
-  const { authState } = useContext(AuthContext);
   const [employee, setEmployee] = useState(null);
   const [employeeClocks, setEmployeeClocks] = useState([]);
   const [totalEmployeeHours, setTotalEmployeeHours] = useState(0);
+
+  const navigate = useNavigate();
+  const { authState } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchEmployeeClocks = async () => {
@@ -54,7 +56,7 @@ const EmployeeEditScreen = ({ navigation }) => {
     <Layout isAdmin={authState.user.isAdmin}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Edit Employee</Text>
+          <Text style={styles.headerTitle}>Employee</Text>
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Working Hours</Text>
@@ -91,17 +93,24 @@ const EmployeeEditScreen = ({ navigation }) => {
             <Text style={styles.dailyHours}>Hours</Text>
           </View>
           {employeeClocks.map((item, index) => (
-            <View key={index} style={styles.dailyRecord}>
-              <Text style={styles.dailyDate}>
-                {moment(item.startTime.toDate()).format("DD/MM/YYYY")}
-              </Text>
-              <Text style={styles.dailyHours}>
-                {moment(item.endTime.toDate()).diff(
-                  moment(item.startTime.toDate()),
-                  "minutes"
-                )}
-                min
-              </Text>
+            <View key={index}>
+              <TouchableOpacity
+                style={styles.dailyRecord}
+                onPress={() =>
+                  navigate(`/employee-edit/edit-hours/${id}/${item.id}`)
+                }
+              >
+                <Text style={styles.dailyDate}>
+                  {moment(item.startTime.toDate()).format("DD/MM/YYYY")}
+                </Text>
+                <Text style={styles.dailyHours}>
+                  {moment(item.endTime.toDate()).diff(
+                    moment(item.startTime.toDate()),
+                    "minutes"
+                  )}
+                  min
+                </Text>
+              </TouchableOpacity>
             </View>
           ))}
         </View>
