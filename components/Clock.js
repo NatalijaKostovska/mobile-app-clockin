@@ -195,10 +195,6 @@ const Clock = () => {
           Clock Out
         </Text>
       </TouchableOpacity>
-
-      <Text style={styles.warningText}>
-        You're not scheduled to work. Are you sure you want to clock in?
-      </Text>
     </View>
   );
 };

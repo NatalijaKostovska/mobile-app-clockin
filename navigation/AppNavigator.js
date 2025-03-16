@@ -9,6 +9,9 @@ import EmployeeEditScreen from "../screens/Admin/EmployeeEditScreen";
 import EmployeeTimeline from "../screens/Employer/EmployeeTimeline";
 import { ProtectedRoute } from "./ProtectedRoute";
 import EmployeeEditHours from "../screens/Admin/EmployeeEditHours";
+import ScheduleCalendar from "../screens/Admin/ScheduleCalendar";
+import ScheduleCalendarEmployee from "../screens/Employer/ScheduleCalendar";
+import ExportEmployeeHours from "../screens/Admin/ExportEmployeeHours";
 
 export default function AppNavigator() {
   return (
@@ -48,6 +51,22 @@ export default function AppNavigator() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/schedule"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <ScheduleCalendar />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/export"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <ExportEmployeeHours />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Protected Employee Routes */}
         <Route
@@ -55,6 +74,14 @@ export default function AppNavigator() {
           element={
             <ProtectedRoute allowedRoles={["employee"]}>
               <EmployeeDashboardScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/schedule-employee"
+          element={
+            <ProtectedRoute allowedRoles={["employee"]}>
+              <ScheduleCalendarEmployee />
             </ProtectedRoute>
           }
         />
