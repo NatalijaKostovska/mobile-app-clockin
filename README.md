@@ -2,7 +2,7 @@
 
 ## Description
 
-A mobile time-tracking application built using React Native and Expo. This app helps users track their working hours efficiently.
+A mobile time-tracking application built using React Native and Expo. This app helps admin and users to track and menage their working hours.
 
 ## Features
 
