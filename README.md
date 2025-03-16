@@ -16,7 +16,7 @@ View detailed reports of logged hours
 
 Clone the repository:
 
-git clone https://github.com/yourusername/clockify-app.git
+git clone https://github.com/NatalijaKostovska/mobile-app-clockin.git
 
 ## Navigate to the project directory:
 
