@@ -1,10 +1,13 @@
-import React from 'react';
-import { Text, View } from 'react-native';
+import React, { StrictMode } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import AppNavigator from './navigation/AppNavigator';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 
 export default function App() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Welcome to my Expo app!</Text>
-    </View>
-  );
+  return ( 
+      <AuthProvider>
+          <AppNavigator/>
+      </AuthProvider>
+
+  ); 
 }
