@@ -3,3 +3,4 @@ firebase-service-account.json
 .env
 .prettierignore
 firebase/firebaseConfig.js
+.expo/
