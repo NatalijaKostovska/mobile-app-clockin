@@ -34,14 +34,3 @@ To use the Employee Time Tracking App, follow these steps:
 - Log in with your employer or employee credentials
 - Use the app to clock in and out, view schedules, and request time off
 
-## Contributing
-
-Contributions to the Employee Time Tracking App are welcome. To contribute, follow these steps:
-
-- Fork the repository: `git fork https://github.com/your-username/employee-time-tracking-app.git`
-- Make changes to the code
-- Submit a pull request
-
-## License
-
-The Employee Time Tracking App is licensed under the MIT License.
